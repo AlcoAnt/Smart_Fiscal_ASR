@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulateur d'impôt Nouvelle-Calédonie 2025 - Thème Allianz</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Simulateur d'impôt Nouvelle-Calédonie 2025</h1>
+            <div class="tabs">
+                <button class="tab-button active" onclick="openTab(event, 'form-tab')">Formulaire</button>
+                <button class="tab-button" onclick="openTab(event, 'results-tab')" id="results-tab-button" disabled>Résultats</button>
+                <button class="tab-button" onclick="openTab(event, 'optimization-tab')" id="optimization-tab-button" disabled>Optimisation retraite</button>
+            </div>
+        </header>
+        
+        <!-- Onglet Formulaire -->
+        <div id="form-tab" class="tab-content active">
+            <div class="info-box">
+                <h3>Informations importantes</h3>
+                <p>Ce simulateur vous permet de calculer votre impôt sur le revenu en Nouvelle-Calédonie pour l'année 2025 et d'optimiser votre fiscalité grâce aux dispositifs de retraite complémentaire (article 128.d du Code des impôts).</p>
+                <p>Les montants doivent être saisis en Francs CFP. Le simulateur applique automatiquement les abattements et déductions prévus par la législation.</p>
+            </div>
+            
+            <form id="tax-form">
+                <!-- Cadre 0 - État Civil -->
+                <div class="cadre">
+                    <h3>Cadre 0 - État Civil</h3>
+                    
+                    <div class="section">
+                        <h4>Situation de famille</h4>
+                        <table>
+                            <tr>
+                                <td><label for="situation-M">Marié(e)</label></td>
+                                <td>
+                                    <input type="radio" id="situation-M" name="situation" value="M">
+                                    <label for="situation-M">M</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="situation-P">Pacsé(e)</label></td>
+                                <td>
+                                    <input type="radio" id="situation-P" name="situation" value="P">
+                                    <label for="situation-P">P</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="situation-C">Célibataire (ou vivant en union libre)</label></td>
+                                <td>
+                                    <input type="radio" id="situation-C" name="situation" value="C" checked>
+                                    <label for="situation-C">C</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="situation-D">Divorcé(e) ou séparé(e)</label></td>
+                                <td>
+                                    <input type="radio" id="situation-D" name="situation" value="D">
+                                    <label for="situation-D">D</label>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td><label for="situation-V">Veuf ou veuve</label></td>
+                                <td>
+                                    <input type="radio" id="situation-V" name="situation" value="V">
+                                    <label for="situation-V">V</label>
+                                </td>
+                            </tr>
+                            <tr class="veuf-option hidden">
+                                <td><label for="veuf_q1">2025 est votre première année de veuvage ?</label></td>
+                                <td>
+                                    <input type="checkbox" id="veuf_q1" name="veuf_q1">
+                                </td>
+                            </tr>
+                            <tr class="veuf-option hidden">
+                                <td><label for="veuf_q2">Vous avez au moins 1 enfant à charge issu de votre mariage avec le conjoint décédé ?</label></td>
+                                <td>
+                                    <input type="checkbox" id="veuf_q2" name="veuf_q2">
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Résident en Nouvelle-Calédonie</h4>
+                        <table>
+                            <tr>
+                                <td><label for="resident">(désélectionner si non résident)</label></td>
+                                <td>
+                                    <input type="checkbox" id="resident" name="resident" checked>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Ancien combattant - Invalidité</h4>
+                        <table>
+                            <tr>
+                                <td></td>
+                                <td>Vous</td>
+                                <td>Conjoint</td>
+                            </tr>
+                            <tr>
+                                <td>Aucun</td>
+                                <td><input type="radio" name="invalidite_vous" value="aucun" checked></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="aucun" checked></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Vous êtes âgé de + de 70 ans et titulaire de la carte du combattant.<br>
+                                    Vous êtes veuve/veuf, âgée de + de 70 ans et votre conjoint remplissait les conditions ci-dessus</label>
+                                </td>
+                                <td><input type="radio" name="invalidite_vous" value="TCC"></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="TCC"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <label>Vous avez une pension (militaire ou d'accident du travail) pour une invalidité d'au moins 40 %, une carte d'invalidité supérieure 50 % ou une perte d'autonomie GIR1, GIR2, GIR3 ou GIR4.<br>
+                                    Vous êtes veuve/veuf et votre conjoint avait une pension militaire pour une invalidité d'au moins 40 %</label>
+                                </td>
+                                <td><input type="radio" name="invalidite_vous" value="pension"></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="pension"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Invalide de guerre</label></td>
+                                <td><input type="radio" name="invalidite_vous" value="TP1"></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="TP1"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Invalide civil d'au moins 50 % ou perte d'autonomie GIR1, GIR2, GIR3 ou GIR4</label></td>
+                                <td><input type="radio" name="invalidite_vous" value="TP4"></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="TP4"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Invalide accident du travail</label></td>
+                                <td><input type="radio" name="invalidite_vous" value="TP5"></td>
+                                <td><input type="radio" name="invalidite_conjoint" value="TP5"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Personnes à charge</h4>
+                        <p class="note">Un même enfant ne doit être déclaré que dans une seule rubrique.</p>
+                        <table>
+                            <tr>
+                                <td><label for="NBENF">Nombre d'enfants à charge en Nouvelle-Calédonie au 01/01/2025, ou nés en 2025</label></td>
+                                <td><input type="number" id="NBENF" name="NBENF" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="NBETUD">Nombre d'étudiants hors du territoire ou handicapés titulaires de la carte CEJH-NC</label></td>
+                                <td><input type="number" id="NBETUD" name="NBETUD" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="NBENFAC">Nombre d'enfants accueillis</label></td>
+                                <td><input type="number" id="NBENFAC" name="NBENFAC" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="NBENFACH">Nombre d'enfants handicapés accueillis (titulaires de la carte CEJH-NC)</label></td>
+                                <td><input type="number" id="NBENFACH" name="NBENFACH" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="NBENFALT">Nombre d'enfants en garde alternée</label></td>
+                                <td><input type="number" id="NBENFALT" name="NBENFALT" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label for="NBHANDIALT">Nombre d'enfants handicapés en garde alternée</label></td>
+                                <td><input type="number" id="NBHANDIALT" name="NBHANDIALT" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td><label>Nombre d'enfants déclarés</label></td>
+                                <td id="total-enfants">0</td>
+                            </tr>
+                            <tr>
+                                <td><label for="NASCAC">Nombre d'ascendants à charge</label></td>
+                                <td><input type="number" id="NASCAC" name="NASCAC" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Cadre 1 - Traitements, salaires, pensions et rentes -->
+                <div class="cadre">
+                    <h3>Cadre 1 - Traitements, salaires, pensions et rentes</h3>
+                    <p class="note">Ne calculez pas la déduction de 10% et l'abattement de 20%, ils seront déduits automatiquement.</p>
+                    
+                    <table>
+                        <tr>
+                            <td></td>
+                            <td>Vous</td>
+                            <td>Conjoint</td>
+                            <td>Personnes à charge</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total annuel net des salaires et traitements</strong> perçus, y compris les avantages en nature</td>
+                            <td><input type="number" id="NA" name="NA" min="0" value="0"></td>
+                            <td><input type="number" id="NB" name="NB" min="0" value="0"></td>
+                            <td><input type="number" id="NC" name="NC" min="0" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Frais réels justifiés</strong></td>
+                            <td><input type="number" id="OA" name="OA" min="0" value="0"></td>
+                            <td><input type="number" id="OB" name="OB" min="0" value="0"></td>
+                            <td><input type="number" id="OC" name="OC" min="0" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Total annuel net des pensions, retraites et rentes</strong> perçues à titre gratuit</td>
+                            <td><input type="number" id="PA" name="PA" min="0" value="0"></td>
+                            <td><input type="number" id="PB" name="PB" min="0" value="0"></td>
+                            <td><input type="number" id="PC" name="PC" min="0" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <strong>Vous êtes gérant(s) majoritaire(s) de SARL&nbsp;:</strong>
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">En cochant cette case, les cotisations retraite et sociales seront déduites AVANT l'application des abattements de 10% et 20%, ce qui est avantageux fiscalement.</span>
+                                </div>
+                            </td>
+                            <td><input type="checkbox" id="gerant_vous" name="gerant_vous"></td>
+                            <td><input type="checkbox" id="gerant_conjoint" name="gerant_conjoint"></td>
+                            <td><input type="checkbox" id="gerant_charge" name="gerant_charge"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span class="highlight">Vos cotisations de retraite</span>
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">Ces cotisations sont déductibles de votre revenu. Pour les gérants majoritaires, elles sont déduites avant l'application des abattements de 10% et 20%.</span>
+                                </div>
+                            </td>
+                            <td><input type="number" id="OD" name="OD" min="0" value="0" class="highlight"></td>
+                            <td><input type="number" id="OE" name="OE" min="0" value="0" class="highlight"></td>
+                            <td><input type="number" id="OF" name="OF" min="0" value="0" class="highlight"></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <span>Vos autres cotisations sociales</span>
+                                <div class="tooltip">ⓘ
+                                    <span class="tooltiptext">Ces cotisations sont déductibles de votre revenu. Pour les gérants majoritaires, elles sont déduites avant l'application des abattements de 10% et 20%.</span>
+                                </div>
+                            </td>
+                            <td><input type="number" id="OG" name="OG" min="0" value="0"></td>
+                            <td><input type="number" id="OH" name="OH" min="0" value="0"></td>
+                            <td><input type="number" id="OI" name="OI" min="0" value="0"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Cadre 3 - Revenus fonciers -->
+                <div class="cadre">
+                    <h3>Cadre 3 - Revenus fonciers</h3>
+                    
+                    <table>
+                        <tr>
+                            <td>Revenus fonciers soumis à IR (ligne H ou F de la déclaration des revenus fonciers)</td>
+                            <td><input type="number" id="AA" name="AA" min="0" value="0"></td>
+                        </tr>
+                        <tr>
+                            <td>Déficit foncier (ligne E de la déclaration des revenus fonciers)</td>
+                            <td><input type="number" id="AG" name="AG" min="0" value="0"></td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Cadre 4 - Bénéfices des professions non salariées - Régime du forfait -->
+                <div class="cadre">
+                    <h3>Cadre 4 - Bénéfices des professions non salariées - Régime du forfait</h3>
+                    
+                    <div class="section">
+                        <h4>Bénéfices Industriels et Commerciaux</h4>
+                        <table>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>Vous</td>
+                                <td>Conjoint</td>
+                                <td>Personnes à charge</td>
+                            </tr>
+                            <tr>
+                                <td>Activités de vente</td>
+                                <td><strong>CA</strong></td>
+                                <td><input type="number" id="EA" name="EA" min="0" value="0"></td>
+                                <td><input type="number" id="EB" name="EB" min="0" value="0"></td>
+                                <td><input type="number" id="EC" name="EC" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><strong>Achats</strong></td>
+                                <td><input type="number" id="ED" name="ED" min="0" value="0"></td>
+                                <td><input type="number" id="EE" name="EE" min="0" value="0"></td>
+                                <td><input type="number" id="EF" name="EF" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td><strong>Salaires versés</strong></td>
+                                <td><input type="number" id="EG" name="EG" min="0" value="0"></td>
+                                <td><input type="number" id="EH" name="EH" min="0" value="0"></td>
+                                <td><input type="number" id="EI" name="EI" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>Activités de services</td>
+                                <td><strong>CA</strong></td>
+                                <td><input type="number" id="FA" name="FA" min="0" value="0"></td>
+                                <td><input type="number" id="FB" name="FB" min="0" value="0"></td>
+                                <td><input type="number" id="FC" name="FC" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Bénéfices Non Commerciaux</h4>
+                        <div class="tooltip">ⓘ
+                            <span class="tooltiptext">Le bénéfice forfaitaire est égal à 2/3 des recettes (soit environ 66,67%), pour les recettes ≤ 7 500 000 F.</span>
+                        </div>
+                        <table>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>Vous</td>
+                                <td>Conjoint</td>
+                                <td>Personnes à charge</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Recettes annuelles</td>
+                                <td><input type="number" id="HA" name="HA" min="0" value="0"></td>
+                                <td><input type="number" id="HB" name="HB" min="0" value="0"></td>
+                                <td><input type="number" id="HC" name="HC" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Bénéfices Agricoles</h4>
+                        <div class="tooltip">ⓘ
+                            <span class="tooltiptext">Le bénéfice forfaitaire est égal à 1/6 du chiffre d'affaires (soit environ 16,67%).</span>
+                        </div>
+                        <table>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>Vous</td>
+                                <td>Conjoint</td>
+                                <td>Personnes à charge</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Chiffres d'affaires</td>
+                                <td><input type="number" id="GA" name="GA" min="0" value="0"></td>
+                                <td><input type="number" id="GB" name="GB" min="0" value="0"></td>
+                                <td><input type="number" id="GC" name="GC" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Cotisations personnelles de l'exploitant</h4>
+                        <table>
+                            <tr>
+                                <td colspan="2"></td>
+                                <td>Vous</td>
+                                <td>Conjoint</td>
+                                <td>Personnes à charge</td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">Retraites</td>
+                                <td><input type="number" id="QA" name="QA" min="0" value="0" class="highlight"></td>
+                                <td><input type="number" id="QB" name="QB" min="0" value="0" class="highlight"></td>
+                                <td><input type="number" id="QC" name="QC" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td colspan="2">
+                                    <span>RUAMM</span>
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Ces cotisations sont directement déductibles du bénéfice forfaitaire.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="QD" name="QD" min="0" value="0"></td>
+                                <td><input type="number" id="QE" name="QE" min="0" value="0"></td>
+                                <td><input type="number" id="QF" name="QF" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+                
+                <!-- Cadre 5 - Charges déductibles du revenu global -->
+                <div class="cadre">
+                    <h3>Cadre 5 - Charges déductibles du revenu global</h3>
+                    
+                    <div class="section">
+                        <h4>Intérêts d'emprunts : Bien Immobilier</h4>
+                        <p><strong>Vous êtes propriétaire en Nouvelle-Calédonie de votre habitation principale.</strong></p>
+                        <p>Intérêts d'emprunts versés en 2025 pour la construction, l'acquisition, y compris l'assiette foncière dans la limite de 10 ares, l'agrandissement ou les grosses réparations, majorés des primes d'assurance décès liées au prêt.</p>
+                        
+                        <table>
+                            <tr>
+                                <td>
+                                    Logement sis <strong>à Nouméa, Dumbéa, Mont-Dore, Païta</strong> et prêt souscrit entre le 01/01/2019 et le 31/12/2021 uniquement pour la construction ou l'acquisition en état futur d'achèvement
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Plafond de déduction : 1 000 000 F par an sur les 20 premières annuités.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XI" name="XI" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Logement sis <strong>à Nouméa</strong> et prêt souscrit à partir du 01/01/2004 ou logement sis <strong>à Dumbéa, Mont-Dore, Païta</strong> et prêt souscrit à partir du 01/01/2017 (sauf, pour ces 4 communes, si le prêt est souscrit dans les conditions de la rubrique XI)
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Plafond de déduction : 500 000 F par an sur les 20 premières annuités.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XO" name="XO" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Logement sis <strong>hors Grand Nouméa</strong> quelle que soit la date du prêt ou logement sis <strong>à Dumbéa, Mont-Dore, Païta</strong> et prêt souscrit avant le 01/01/2017
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Pas de plafond de déduction pour ces logements.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XP" name="XP" min="0" value="0"></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    Logement <strong>neuf sis à Nouméa</strong>, prêt souscrit en 1997 et 1998
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Pas de plafond de déduction pour ces logements spécifiques.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XV" name="XV" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Travaux effectués en 2025 par un professionnel</h4>
+                        <table>
+                            <tr>
+                                <td>
+                                    Dépenses pour travaux d'amélioration, de grosses réparations, d'agrandissement, de ravalement, de revêtement de surface (propriétaires), d'adaptation du logement pour les personnes en situation de handicap ou de dépendance et celles relatives la sécurité des biens et des personnes (propriétaires et locataires).
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Nouveau plafond 2025 : 15 millions de francs sur 3 ans (2025-2027). La liste des travaux éligibles a été élargie pour inclure des travaux extérieurs (decks, piscines, etc.)</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XX" name="XX" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Travaux ou achats d'équipements dits "Verts" (propriétaires et locataires)</h4>
+                        <table>
+                            <tr>
+                                <td>
+                                    Travaux permettant d'améliorer l'isolation, la consommation d'énergie, de consommer de l'énergie renouvelable ou de faciliter l'assainissement et dépenses pour l'acquisition de biens d'équipements ménagers électriques basse consommation énergétique.
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Ces travaux partagent le même plafond global de 15 millions de francs sur 3 ans que les travaux classiques.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XG" name="XG" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Pensions alimentaires</h4>
+                        <table>
+                            <tr>
+                                <td>Total des versements effectués en 2025</td>
+                                <td><input type="number" id="XD" name="XD" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Frais de garde des enfants âgés de moins de 7 ans</h4>
+                        <table>
+                            <tr>
+                                <td>
+                                    Montant versé des crèches ou des assistantes maternelles agréées
+                                    <div class="tooltip">ⓘ
+                                        <span class="tooltiptext">Plafond de déduction : 1 000 000 F par an, pour l'ensemble des enfants.</span>
+                                    </div>
+                                </td>
+                                <td><input type="number" id="XL" name="XL" min="0" value="0"></td>
+                            </tr>
+                        </table>
+                    </div>
+                    
+                    <div class="section">
+                        <h4>Services à la personne</h4>
+                        <table>
+                            <tr>
+                                <td>
+                                    Salaires aux gens de maison (net + cotisations sociales) et prestations payées aux entreprises employant des salariés effectuant les mêmes services ou des
